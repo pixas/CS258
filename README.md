@@ -20,4 +20,4 @@ q.display()
 ```
 
 And such a QRcode will be generated:
-
+![](img1.jpg)
