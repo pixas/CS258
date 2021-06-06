@@ -1,5 +1,6 @@
 # CS258 final project
 Although some of these codes are referred to some repository (including Error Correction Codeword generation and GF feild convertion calculation), I completed most of work.
+After the final week, I will try to complete another three modes for input.
 
 ## Thought of Design
 1. determine a suitable version for input text
