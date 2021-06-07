@@ -5,8 +5,7 @@ import numpy as np
 import err_corr_code
 from constants import *
 
-PAD1 = 0b11101100
-PAD2 = 0b00010001
+
 
 
 def to_bytestring(data: str):
@@ -86,13 +85,7 @@ class QrData:
             buffer.put(c, 8)
 
 
-G15 = (
-    (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) |
-    (1 << 0))
-G18 = (
-    (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) |
-    (1 << 2) | (1 << 0))
-G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1)
+
 
 def BCH_digit(data):
     """count bits in binary representation of data

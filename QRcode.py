@@ -1,6 +1,5 @@
 import os
 from bisect import bisect_left
-from sys import version
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -240,7 +239,7 @@ class QrCode:
                 self.version, self.err_corr, self.data_list)
         self.fill_data_err_corr_code(self.data_cache, mask_pattern)
 
-    def display(self, save_dir=None):
+    def display(self, save_dir=None, name=None):
 
         array = np.pad(self.modules, ((self.border, self.border), (self.border, self.border)),
                        "constant", constant_values=((False, False), (False, False)))
@@ -261,18 +260,40 @@ class QrCode:
         ax.spines['left'].set_visible(False)
 
         if save_dir is not None:
-            plt.savefig(os.path.join(save_dir, "img1.jpg"), dpi=600)
+            plt.savefig(os.path.join(save_dir, name), dpi=600)
         plt.show()
 
 
 if __name__ == "__main__":
     # q = QrCode()
+    import time
     q = QrCode()
-    q.add_data("""Finally finished CS258 project!!!""")
+    q.add_data("""Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!""")
+    begin = time.time()
     q.make()
+    end = time.time()
+    print("Execution time: {}".format(end - begin))
     print(q.version)
-    print(q.modules.shape)
-    q.display(save_dir=os.path.dirname(os.path.abspath(__file__)))
+    q.display(save_dir=os.path.dirname(os.path.abspath(__file__)), name="zen.jpg")
+    # q.display()
     # import qrcode
     # q = qrcode.QRCode()
     # q.add_data("""Through a flowery sea of dreams they go.""")
