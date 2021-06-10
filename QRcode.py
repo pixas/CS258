@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 from constants import *
 from utils import *
-
+import cv2
 
 class QrCode:
     def __init__(self, version=None, err_corr="M",
@@ -262,38 +262,49 @@ class QrCode:
         if save_dir is not None:
             plt.savefig(os.path.join(save_dir, name), dpi=600)
         plt.show()
+        
+    def insert_logo(self, logo):
 
+        pixels = np.tile(np.expand_dims(np.where(self.modules, 0, 255), -1), [1, 1, 3])
+        size = self.modules.shape[0]
+        if isinstance(logo, np.ndarray):
+            emb_img = logo
+        elif isinstance(logo, str):
+            emb_img = cv2.imread(os.path.join(os.path.dirname(os.path.abspath(__file__)), logo), cv2.IMREAD_GRAYSCALE)
+            print((emb_img == 1).any())
+            
+            emb_img = cv2.cvtColor(emb_img, cv2.COLOR_BGR2RGB)
+        else:
+            raise TypeError("logo argument expects str or np.ndarray dtype, got {}".format(type(logo)))
+        
+        plt.imshow(emb_img)
+        plt.show()
+        
+        emb_width = int(min(emb_img.shape[1], size / 7 * 2))
+        emb_height = int(min(emb_img.shape[0], size / 7 * 2))
+        # print(emb_width, emb_height)
+        emb_fill_height = (size - emb_height) // 2
+        emb_fill_width = (size - emb_width) // 2
+        
+        emb_img = cv2.resize(emb_img, (emb_width, emb_height), interpolation=cv2.INTER_AREA)
+        pixels[emb_fill_height: emb_fill_height + emb_height, emb_fill_width: emb_fill_width + emb_width, :] = emb_img
+        plt.imshow(pixels)
+        plt.show()
+        pass
 
 if __name__ == "__main__":
     # q = QrCode()
     import time
     q = QrCode()
-    q.add_data("""Beautiful is better than ugly.
-Explicit is better than implicit.
-Simple is better than complex.
-Complex is better than complicated.
-Flat is better than nested.
-Sparse is better than dense.
-Readability counts.
-Special cases aren't special enough to break the rules.
-Although practicality beats purity.
-Errors should never pass silently.
-Unless explicitly silenced.
-In the face of ambiguity, refuse the temptation to guess.
-There should be one-- and preferably only one --obvious way to do it.
-Although that way may not be obvious at first unless you're Dutch.
-Now is better than never.
-Although never is often better than *right* now.
-If the implementation is hard to explain, it's a bad idea.
-If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea -- let's do more of those!""")
+    q.add_data("""My number is 519030910043""")
     begin = time.time()
     q.make()
     end = time.time()
     print("Execution time: {}".format(end - begin))
     print(q.version)
-    q.display(save_dir=os.path.dirname(os.path.abspath(__file__)), name="zen.jpg")
-    # q.display()
+    # q.display(save_dir=os.path.dirname(os.path.abspath(__file__)), name="zen.jpg")
+    q.display()
+    # q.insert_logo("small.png")
     # import qrcode
     # q = qrcode.QRCode()
     # q.add_data("""Through a flowery sea of dreams they go.""")
